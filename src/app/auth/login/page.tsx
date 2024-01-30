@@ -1,10 +1,9 @@
 import { titleFont } from "@/config/fonts";
 
-export default function Home() {
+export default function LoginPage() {
   return (
     <div>
       <p className={`${titleFont.className} font-medium`}>Hola mundo</p>
-      <p className={`${titleFont.className} font-light`}>Hola mundo</p>
     </div>
   );
 }
