@@ -9,10 +9,10 @@ export const NotFoundPage = () => {
         <h2 className={`${titleFont.className} antialiased text-9xl`}>404</h2>
         <p className="font-semibold text-xl">Whoops! Lo sentimos mucho</p>
         <p className="font-light">
-          <span >Puedes regresar al</span>
+          <span >Puedes regresar al </span>
           <Link
             href="/"
-            className="font-normal hover:underline transition-all"
+            className="font-medium hover:underline transition-all"
           >inicio</Link>
         </p>
       </div>

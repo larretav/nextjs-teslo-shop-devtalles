@@ -26,6 +26,7 @@ export const Sidebar = (props: Props) => {
       {/* Blur */}
       {
         open && <div
+          onClick={closeMenu}
           className="fade-in fixed top-0 left-0 w-screen h-screen z-10 backdrop-filter backdrop-blur-sm"
         />
       }
@@ -45,7 +46,7 @@ export const Sidebar = (props: Props) => {
         <IoCloseOutline
           size={50}
           className="absolute top-5 right-5 cursor-pointer"
-          onClick={() => closeMenu()}
+          onClick={closeMenu}
         />
 
         {/* Input */}

@@ -25,7 +25,7 @@ export const TopMenu = (props: Props) => {
       <div className="hidden sm:block">
         <Link className="px-2 py-1 rounded-md transition-all hover:bg-slate-100" href="/category/men">Hombres</Link>
         <Link className="px-2 py-1 rounded-md transition-all hover:bg-slate-100" href="/category/women">Mujeres</Link>
-        <Link className="px-2 py-1 rounded-md transition-all hover:bg-slate-100" href="/category/kids">Niños</Link>
+        <Link className="px-2 py-1 rounded-md transition-all hover:bg-slate-100" href="/category/kid">Niños</Link>
       </div>
 
       {/* Search, Cart, Menu */}
@@ -33,7 +33,7 @@ export const TopMenu = (props: Props) => {
         <Link href="/search">
           <IoSearchOutline className="w-5 h-5" />
         </Link>
-        <Link href="/search">
+        <Link href="/cart">
           <div className="relative">
             <span className="px-1 absolute text-xs rounded-full font-bold -top-2 -right-2 bg-blue-500 text-white">
               5
