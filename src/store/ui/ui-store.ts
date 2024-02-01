@@ -1,15 +1,23 @@
 import { create } from 'zustand'
 
 interface State {
-  isSideMenuOpen: boolean
-
-  openSideMenu: ()=> void,
-  closeSideMenu: ()=> void,
+  isSideMenuOpen: boolean,
+  isMiniCartOpen: boolean,
 }
 
-export const useUIStore = create<State>()((set) => ({
-  isSideMenuOpen: false,
+type Action = {
+  openSideMenu: () => void,
+  closeSideMenu: () => void,
 
-  openSideMenu: ()=> set({isSideMenuOpen: true}),
-  closeSideMenu: ()=> set({isSideMenuOpen: false}),
+  miniCartToggle: () => void
+}
+
+export const useUIStore = create<State & Action>()((set) => ({
+  isSideMenuOpen: false,
+  isMiniCartOpen: false,
+
+  openSideMenu: () => set({ isSideMenuOpen: true }),
+  closeSideMenu: () => set({ isSideMenuOpen: false }),
+
+  miniCartToggle: () => set((state) => ({ isMiniCartOpen: !state.isMiniCartOpen })),
 }))

@@ -21,7 +21,7 @@ export default function ProductSlugPage({ params }: Props) {
     <div className="mt-5 mb-20 grid grid-cols-1 md:grid-cols-3 gap-3">
 
       {/* Slideshow */}
-      <div className="col-span-1: md:col-span-2 ">
+      <div className="col-span-1: md:col-span-2">
         {/* Mobile */}
         <ProductMobileSlideshow title={product.title} images={product.images} className="block md:hidden" />
         {/* Desktop */}

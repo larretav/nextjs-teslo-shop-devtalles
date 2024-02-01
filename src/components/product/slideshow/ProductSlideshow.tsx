@@ -36,7 +36,7 @@ export const ProductSlideshow = ({ images, title, className }: Props) => {
         autoplay={{ delay: 2500 }}
         thumbs={{ swiper: thumbsSwiper }}
         modules={[FreeMode, Navigation, Thumbs, Autoplay]}
-        className="mySwiper2"
+        className="mySwiper2 "
       >
         {
           images.map(img => <SwiperSlide key={img}>
@@ -45,7 +45,7 @@ export const ProductSlideshow = ({ images, title, className }: Props) => {
               alt={title}
               width={1024}
               height={800}
-              className="sm:rounded-lg object-fill"
+              className="sm:rounded-lg h-full "
             />
           </SwiperSlide>)
         }
@@ -53,7 +53,7 @@ export const ProductSlideshow = ({ images, title, className }: Props) => {
 
       <Swiper
         onSwiper={setThumbsSwiper}
-        spaceBetween={10}
+        spaceBetween={0}
         slidesPerView={4}
         freeMode={true}
         watchSlidesProgress={true}
@@ -67,7 +67,8 @@ export const ProductSlideshow = ({ images, title, className }: Props) => {
               alt={title}
               width={300}
               height={300}
-              className="rounded-lg object-fill w-[300px] h-[300px]"
+              style={{width: 200, height: 200, objectFit:'cover'}}
+              className="rounded-xl "
             />
           </SwiperSlide>)
         }

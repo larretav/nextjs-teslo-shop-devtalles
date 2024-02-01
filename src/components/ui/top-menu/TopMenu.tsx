@@ -3,12 +3,14 @@ import { titleFont } from "@/config/fonts"
 import { useUIStore } from "@/store"
 import Link from "next/link"
 import { IoCartOutline, IoSearchOutline } from "react-icons/io5"
+import { MiniCart } from "./MiniCart";
 
 type Props = {}
 
 export const TopMenu = (props: Props) => {
 
-  const openSideMenu = useUIStore((state)=> state.openSideMenu)
+  const openSideMenu = useUIStore((state) => state.openSideMenu)
+  const miniCartToggle = useUIStore((state) => state.miniCartToggle)
 
   return (
     <nav className="px-5 box-border flex justify-between items-center w-full">
@@ -33,22 +35,25 @@ export const TopMenu = (props: Props) => {
         <Link href="/search">
           <IoSearchOutline className="w-5 h-5" />
         </Link>
-        <Link href="/cart">
-          <div className="relative">
-            <span className="px-1 absolute text-xs rounded-full font-bold -top-2 -right-2 bg-blue-500 text-white">
-              5
-            </span>
-            <IoCartOutline className="w-5 h-5" />
-          </div>
-        </Link>
+        {/* <Link href="/cart"> */}
+
+        <div onClick={miniCartToggle} className="relative cursor-pointer">
+          <span className="px-1 absolute text-xs rounded-full font-bold -top-2 -right-2 bg-blue-500 text-white">
+            5
+          </span>
+          <IoCartOutline className="w-5 h-5" />
+          <MiniCart />
+        </div>
+        {/* </Link> */}
 
         <button
-          onClick={()=> openSideMenu()}
+          onClick={openSideMenu}
           className="m-2 px-2 py-1 rounded-md transition-all hover:bg-gray-100"
         >
           Menú
         </button>
       </div>
+
 
     </nav>
   )
