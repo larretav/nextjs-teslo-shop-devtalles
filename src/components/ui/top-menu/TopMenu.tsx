@@ -25,9 +25,9 @@ export const TopMenu = (props: Props) => {
 
       {/* Center Menu */}
       <div className="hidden sm:block">
-        <Link className="px-2 py-1 rounded-md transition-all hover:bg-slate-100" href="/category/men">Hombres</Link>
-        <Link className="px-2 py-1 rounded-md transition-all hover:bg-slate-100" href="/category/women">Mujeres</Link>
-        <Link className="px-2 py-1 rounded-md transition-all hover:bg-slate-100" href="/category/kid">Niños</Link>
+        <Link className="px-2 py-1 rounded-md transition-all hover:bg-slate-100" href="/gender/men">Hombres</Link>
+        <Link className="px-2 py-1 rounded-md transition-all hover:bg-slate-100" href="/gender/women">Mujeres</Link>
+        <Link className="px-2 py-1 rounded-md transition-all hover:bg-slate-100" href="/gender/kid">Niños</Link>
       </div>
 
       {/* Search, Cart, Menu */}

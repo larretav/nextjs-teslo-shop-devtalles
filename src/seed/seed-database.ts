@@ -1,5 +1,6 @@
 import { initialData } from "./seed";
 import prisma from "../lib/prisma";
+import { Category } from "@prisma/client";
 
 async function main() {
 
@@ -18,10 +19,10 @@ async function main() {
 
   // 3. Preparar Categorias para Productos
   const categoriesDB = await prisma.category.findMany();
-  const categoriesMap = categoriesDB.reduce((map, category) => {
+  const categoriesMap = categoriesDB.reduce((map: Record<string, string>, category: Category) => {
     map[category.name.toLowerCase()] = category.id;
     return map;
-  }, {} as Record<string, string>);
+  }, {});
 
   // 4. Insertar en Productos
   products.forEach(async (product) => {

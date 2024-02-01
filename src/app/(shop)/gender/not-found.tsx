@@ -1,6 +1,6 @@
 import { NotFoundPage } from "@/components";
 
-export default function () {
+export default function NotFoundGender() {
   return (
     <NotFoundPage />
   );
