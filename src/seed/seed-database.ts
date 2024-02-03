@@ -1,6 +1,7 @@
 import { initialData } from "./seed";
-import prisma from "../lib/prisma";
-import { Category } from "@prisma/client";
+// import prisma from "../lib/prisma";
+import { Category, PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient();
 
 async function main() {
 
@@ -51,7 +52,6 @@ async function main() {
     //   data: imagesData
     // })
   });
-
 
   console.log('Seed ejecutado correctamente')
 }

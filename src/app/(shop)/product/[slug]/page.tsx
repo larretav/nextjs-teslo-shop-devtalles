@@ -1,6 +1,10 @@
-import { ProductMobileSlideshow, QuantitySelector, SizeSelector, ProductSlideshow } from '@/components'
+export const revalidate = 604800; // 7 días
+
+import { getProductBySlug } from '@/actions'
+import { ProductMobileSlideshow, QuantitySelector, SizeSelector, ProductSlideshow, StockLabel } from '@/components'
 import { titleFont } from '@/config/fonts'
 import { initialData } from '@/seed/seed'
+import type { Product } from '@prisma/client';
 import { notFound } from 'next/navigation'
 
 type Props = {
@@ -9,10 +13,10 @@ type Props = {
   }
 }
 
-export default function ProductBySlugPage({ params }: Props) {
+export default async function ProductBySlugPage({ params }: Props) {
 
   const { slug } = params;
-  const product = initialData.products.find(product => product.slug === slug);
+  const product = await getProductBySlug(slug);
 
   if (!product)
     notFound()
@@ -30,6 +34,8 @@ export default function ProductBySlugPage({ params }: Props) {
 
       {/* Detalles */}
       <div className="col-span-1 p-1">
+        <StockLabel slug={product.slug} />
+
         <h1 className={`${titleFont.className} antialiased font-bold text-xl`}>
           {product.title}
         </h1>

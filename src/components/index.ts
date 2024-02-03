@@ -1,4 +1,4 @@
-
+export  { StockLabel } from "./product/stock-label/StockLabel";
 export { Footer } from "./ui/footer/Footer";
 export { NotFoundPage } from "./ui/not-found/NotFoundPage";
 export { Pagination } from "./ui/pagination/Pagination";
