@@ -4,8 +4,11 @@ import "./globals.css";
 import { inter } from "@/config/fonts";
 
 export const metadata: Metadata = {
-  title: "Teslo | Shop",
-  description: "Una tienda online de productos",
+  title: {
+    template: '%s - Teslo | Shop',
+    default: 'Home - Teslo | Shop'
+  },
+  description: 'Una tienda online de productos',
 };
 
 export default function RootLayout({

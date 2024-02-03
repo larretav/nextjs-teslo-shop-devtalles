@@ -10,26 +10,37 @@ type Props = {
 
 export const StockLabel = ({ slug }: Props) => {
 
-  const [product, setProduct] = useState<Product | null>();
+  const [inStock, setInStock] = useState<number>();
+  const [isLoading, setIsLoading] = useState(true)
 
-  const getStock = async() => {
+  const getStock = async () => {
     try {
-      const productDb = await getStockBySlug(slug);
+      const inStockDb = await getStockBySlug(slug);
 
-      setProduct(productDb);
+      setInStock(inStockDb);
     } catch (error) {
       console.log(error)
     }
+    setIsLoading(false);
+
   }
 
   useEffect(() => {
     getStock()
   }, [])
-  
+
 
   return (
-    <h1 className={`${titleFont.className} antialiased font-bold text-xl`}>
-      Stock: {product?.inStock || 'Cargando...'}
-    </h1>
+    <>
+      {
+        isLoading
+          ? <h1 className={`${titleFont.className} antialiased font-bold text-xl animate-pulse bg-slate-200`}>
+            &nbsp;
+          </h1>
+          : <h1 className={`${titleFont.className} antialiased font-bold text-xl`}>
+            Stock: {inStock}
+          </h1>
+      }
+    </>
   )
 }

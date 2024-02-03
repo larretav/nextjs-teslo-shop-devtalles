@@ -5,6 +5,7 @@ import { ProductMobileSlideshow, QuantitySelector, SizeSelector, ProductSlidesho
 import { titleFont } from '@/config/fonts'
 import { initialData } from '@/seed/seed'
 import type { Product } from '@prisma/client';
+import { Metadata, ResolvingMetadata } from 'next';
 import { notFound } from 'next/navigation'
 
 type Props = {
@@ -12,6 +13,28 @@ type Props = {
     slug: string
   }
 }
+
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  // read route params
+  const slug = params.slug
+
+  // fetch data
+  const product = await getProductBySlug(slug);
+
+  return {
+    title: product?.title ?? 'Producto no encontrado',
+    description: product?.description ?? '',
+    openGraph: {
+      title: product?.title ?? 'Producto no encontrado',
+      description: product?.description ?? '',
+      images: [`/products/${product?.images[1]}`],
+    },
+  }
+}
+
 
 export default async function ProductBySlugPage({ params }: Props) {
 
