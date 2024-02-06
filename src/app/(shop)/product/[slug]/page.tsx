@@ -7,6 +7,7 @@ import { initialData } from '@/seed/seed'
 import type { Product } from '@prisma/client';
 import { Metadata, ResolvingMetadata } from 'next';
 import { notFound } from 'next/navigation'
+import { AddToCart } from './ui/AddToCart';
 
 type Props = {
   params: {
@@ -64,15 +65,7 @@ export default async function ProductBySlugPage({ params }: Props) {
         </h1>
         <p className="text-lg mb-5">${product.price.toFixed(2)}</p>
 
-        {/* Selector de Tallas */}
-        <SizeSelector selectedSize={product.sizes[0]} availableSizes={product.sizes} />
-
-        {/* Selectod de Cantidad */}
-        <QuantitySelector quantity={1} />
-        {/* Button */}
-        <button className="btn-primary my-5">
-          Agregar al carrito
-        </button>
+        <AddToCart product={product}/>
 
         {/* Descripción */}
         <h3 className="font-bold text-sm ">Descripción</h3>

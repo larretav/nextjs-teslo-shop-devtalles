@@ -1,9 +1,11 @@
 'use client';
 import { titleFont } from "@/config/fonts"
-import { useUIStore } from "@/store"
+import { useCartStore, useUIStore } from "@/store"
 import Link from "next/link"
 import { IoCartOutline, IoSearchOutline } from "react-icons/io5"
 import { MiniCart } from "./MiniCart";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 type Props = {}
 
@@ -11,6 +13,25 @@ export const TopMenu = (props: Props) => {
 
   const openSideMenu = useUIStore((state) => state.openSideMenu)
   const miniCartToggle = useUIStore((state) => state.miniCartToggle)
+  const totalItemsInCart = useCartStore((state) => state.getTotalItems());
+
+  const { push } = useRouter()
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  const handleClickCart = () => {
+
+    if (totalItemsInCart === 0) {
+      push('/empty');
+      return
+    }
+
+    miniCartToggle()
+  }
+
+  useEffect(() => {
+    setIsLoaded(true)
+  }, [])
+
 
   return (
     <nav className="px-5 box-border flex justify-between items-center w-full">
@@ -35,16 +56,17 @@ export const TopMenu = (props: Props) => {
         <Link href="/search">
           <IoSearchOutline className="w-5 h-5" />
         </Link>
-        {/* <Link href="/cart"> */}
 
-        <div onClick={miniCartToggle} className="relative cursor-pointer">
-          <span className="px-1 absolute text-xs rounded-full font-bold -top-2 -right-2 bg-blue-500 text-white">
-            5
-          </span>
+        <div onClick={handleClickCart} className="relative cursor-pointer">
+          {
+            (isLoaded && totalItemsInCart > 0) && <span className="px-1 absolute text-xs rounded-full font-bold -top-2 -right-2 bg-blue-500 text-white">
+              {totalItemsInCart}
+            </span>
+          }
+
           <IoCartOutline className="w-5 h-5" />
           <MiniCart />
         </div>
-        {/* </Link> */}
 
         <button
           onClick={openSideMenu}
