@@ -12,6 +12,7 @@ export const authConfig: NextAuthConfig = {
   },
   providers: [
     Credentials({
+
       async authorize(credentials) {
         const parsedCredentials = z
           .object({ email: z.string().email(), password: z.string().min(6) })
@@ -24,14 +25,12 @@ export const authConfig: NextAuthConfig = {
         // Buscar el correo
         const user = await prisma.user.findUnique({ where: { email: email.toLowerCase() } })
         if (!user) return null;
-        
+
         // Comparar las contraseñas
         if (!bcryptjs.compareSync(password, user.password)) return null;
 
         // Regresar el usuario (sin el password)
         const { password: _, ...rest } = user;
-
-        console.log(rest)
 
         return rest
       },

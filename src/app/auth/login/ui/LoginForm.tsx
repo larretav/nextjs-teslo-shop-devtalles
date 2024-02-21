@@ -1,16 +1,16 @@
 'use client';
 import { authenticate } from '@/actions';
+import clsx from 'clsx';
 import Link from 'next/link'
 import React from 'react'
-import { useFormState } from 'react-dom';
+import { useFormState, useFormStatus } from 'react-dom';
+import { IoWarningOutline } from 'react-icons/io5';
 
 type Props = {}
 
 export const LoginForm = (props: Props) => {
 
   const [state, dispatch] = useFormState(authenticate, undefined);
-
-  console.log(state)
 
   return (
     <form action={dispatch} className="flex flex-col">
@@ -26,11 +26,18 @@ export const LoginForm = (props: Props) => {
         className="px-5 py-2 border bg-gray-200 rounded mb-5"
         type="password" name="password" />
 
-      <button
-        type="submit"
-        className="btn-primary">
-        Ingresar
-      </button>
+      <div
+        className="flex h-8 items-end space-x-1"
+      >
+        {state && (
+          <div className="flex flex-row mb-2 gap-2">
+            <IoWarningOutline className="h-5 w-5 text-red-500" />
+            <p className="text-sm text-red-500">Usuario o contraseña no válidos</p>
+          </div>
+        )}
+      </div>
+
+      <LoginButton />
 
 
       {/* divisor l ine */}
@@ -48,4 +55,22 @@ export const LoginForm = (props: Props) => {
 
     </form>
   )
+}
+
+
+function LoginButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <button
+      type="submit"
+      className={clsx({
+        "btn-primary": !pending,
+        "btn-disabled": pending,
+      })}
+      disabled={pending}
+    >
+      Ingresar
+    </button>
+  );
 }
