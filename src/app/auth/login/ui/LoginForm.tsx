@@ -2,7 +2,8 @@
 import { authenticate } from '@/actions';
 import clsx from 'clsx';
 import Link from 'next/link'
-import React from 'react'
+import { useRouter } from 'next/navigation';
+import React, { useEffect } from 'react'
 import { useFormState, useFormStatus } from 'react-dom';
 import { IoWarningOutline } from 'react-icons/io5';
 
@@ -11,6 +12,13 @@ type Props = {}
 export const LoginForm = (props: Props) => {
 
   const [state, dispatch] = useFormState(authenticate, undefined);
+  const router = useRouter()
+
+  useEffect(() => {
+    if (state == 'Success')
+      window.location.replace('/')
+    // router.replace('/');
+  }, [state])
 
   return (
     <form action={dispatch} className="flex flex-col">
@@ -29,7 +37,7 @@ export const LoginForm = (props: Props) => {
       <div
         className="flex h-8 items-end space-x-1"
       >
-        {state && (
+        {state === 'Invalid credentials.' && (
           <div className="flex flex-row mb-2 gap-2">
             <IoWarningOutline className="h-5 w-5 text-red-500" />
             <p className="text-sm text-red-500">Usuario o contraseña no válidos</p>

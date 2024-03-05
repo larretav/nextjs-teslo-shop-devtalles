@@ -11,19 +11,23 @@ export async function authenticate(
 
   try {
     // await sleep(2)
-    const resp = await signIn('credentials', formData);
-    console.log(resp)
+    const resp = await signIn('credentials', {
+      ...Object.fromEntries(formData),
+      redirect: false
+    });
+
+    return 'Success';
 
   } catch (error) {
+    console.log(error)
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case 'CredentialsSignin':
+          return 'Invalid credentials.';
+        default:
+          return 'Something went wrong.';
+      }
+    }
     
-    // if (error instanceof AuthError) {
-    //   switch (error.type) {
-    //     case 'CredentialsSignin':
-    //       return 'Invalid credentials.';
-    //     default:
-    //       return 'Something went wrong.';
-    //   }
-    // }
-    return 'CredentialsSignin';
   }
 }
