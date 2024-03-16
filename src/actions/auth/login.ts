@@ -19,7 +19,6 @@ export async function authenticate(
     return 'Success';
 
   } catch (error) {
-    console.log(error)
     if (error instanceof AuthError) {
       switch (error.type) {
         case 'CredentialsSignin':
@@ -28,6 +27,20 @@ export async function authenticate(
           return 'Something went wrong.';
       }
     }
-    
+
+  }
+}
+
+export const login = async (email: string, password: string) => {
+  try {
+
+    await signIn('credentials', { email, password, redirect: false })
+    return { ok: true }
+
+  } catch (error) {
+    return {
+      ok: false,
+      message: 'No se pudo iniciar sesón'
+    }
   }
 }
