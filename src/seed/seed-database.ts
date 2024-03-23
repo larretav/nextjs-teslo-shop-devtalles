@@ -1,6 +1,7 @@
 import { initialData } from "./seed";
 // import prisma from "../lib/prisma";
 import { Category, PrismaClient } from "@prisma/client";
+import { seedCountries } from "./seed-countries";
 const prisma = new PrismaClient();
 
 async function main() {
@@ -11,6 +12,7 @@ async function main() {
   await prisma.productImage.deleteMany();
   await prisma.product.deleteMany();
   await prisma.category.deleteMany();
+  await prisma.country.deleteMany();
   // ])
 
   const { categories, products, users } = initialData;
@@ -55,7 +57,10 @@ async function main() {
   });
 
   // 5. Insertar Usuarios
-  await prisma.user.createMany({data: users })
+  await prisma.user.createMany({ data: users })
+  
+  // 6. Insertar Países
+  await prisma.country.createMany({data: seedCountries})
 
   console.log('Seed ejecutado correctamente')
 }
