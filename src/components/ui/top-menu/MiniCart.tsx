@@ -3,18 +3,19 @@ import Image from 'next/image';
 
 import { initialData } from '@/seed/seed';
 import Link from 'next/link';
-import { useUIStore } from '@/store';
+import { useCartStore, useUIStore } from '@/store';
 import clsx from 'clsx';
 
-const productsInCart = [
-  initialData.products[0],
-  initialData.products[1],
-  initialData.products[2],
-];
+// const productsInCart = [
+//   initialData.products[0],
+//   initialData.products[1],
+//   initialData.products[2],
+// ];
 
 export const MiniCart = () => {
 
   const isMiniCartOpen = useUIStore((state) => state.isMiniCartOpen)
+  const productsInCart = useCartStore(state => state.cart);
 
   return (
     <div className={
@@ -29,7 +30,7 @@ export const MiniCart = () => {
         productsInCart.map(product => (
           <div key={product.slug} className="flex mb-2">
             <Image
-              src={`/products/${product.images[0]}`}
+              src={`/products/${product.image}`}
               width={50}
               height={50}
               alt={product.title}

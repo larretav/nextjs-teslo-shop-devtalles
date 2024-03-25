@@ -1,9 +1,11 @@
 'use client';
 
 import { getCountries } from "@/actions";
-import { ISeedCountry } from "@/seed/seed-countries";
+import { Country } from "@/interfaces";
+import { useAddressStore } from "@/store/address/address-store";
 import clsx from "clsx";
 import Link from "next/link";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 type FormInputs = {
@@ -19,19 +21,32 @@ type FormInputs = {
 }
 
 type Props = {
-  countries: ISeedCountry[]
+  countries: Country[]
 }
 
 export const AddressForm = ({ countries }: Props) => {
 
-  const { handleSubmit, register, formState: { isValid } } = useForm<FormInputs>({
+  const { handleSubmit, register, formState: { isValid }, reset } = useForm<FormInputs>({
     // TODO: Leer de la base de datos
     defaultValues: {}
   })
 
-  const onSubmit = (data: FormInputs) => {
-    console.log(data)
+  const setAddress = useAddressStore(state => state.setAddress);
+  const address = useAddressStore(state => state.address);
+
+  const onSubmit = (data: FormInputs) => { 
+    setAddress(data);
   }
+
+  useEffect(() => {
+    console.log(address)
+    if (address.firstName) {
+      console.log('loaded')
+      
+      reset(address)
+    }
+  }, [])
+  
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 gap-2 sm:gap-5 sm:grid-cols-2">

@@ -1,4 +1,4 @@
-export interface ISeedCountry {
+interface ISeedCountry {
   id?: string;
   name: string;
   key: string;
