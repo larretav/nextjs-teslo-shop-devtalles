@@ -16,6 +16,7 @@ export const MiniCart = () => {
 
   const isMiniCartOpen = useUIStore((state) => state.isMiniCartOpen)
   const productsInCart = useCartStore(state => state.cart);
+  const subTotal = productsInCart.reduce((prev, curr) => prev + (curr.price * curr.quantity), 0);
 
   return (
     <div className={
@@ -38,7 +39,7 @@ export const MiniCart = () => {
             />
             <div>
               <p>{product.title}</p>
-              <p>3 x ${product.price}</p>
+              <p>{product.quantity} x ${product.price}</p>
             </div>
           </div>
         ))
@@ -47,7 +48,7 @@ export const MiniCart = () => {
 
 
         <span className="mt-5 font-bold">Sub Total</span>
-        <span className="mt-5 font-bold text-right">$ 100</span>
+        <span className="mt-5 font-bold text-right">$ {subTotal}</span>
 
       </div>
       <Link href="/cart" className="flex btn-primary justify-center">

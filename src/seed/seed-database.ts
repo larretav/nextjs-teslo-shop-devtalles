@@ -8,6 +8,8 @@ async function main() {
 
   // 1. Borrar registros previos
   // await Promise.all([
+  await prisma.userAddress.deleteMany();
+
   await prisma.user.deleteMany();
   await prisma.productImage.deleteMany();
   await prisma.product.deleteMany();
@@ -58,9 +60,9 @@ async function main() {
 
   // 5. Insertar Usuarios
   await prisma.user.createMany({ data: users })
-  
+
   // 6. Insertar Países
-  await prisma.country.createMany({data: seedCountries})
+  await prisma.country.createMany({ data: seedCountries })
 
   console.log('Seed ejecutado correctamente')
 }

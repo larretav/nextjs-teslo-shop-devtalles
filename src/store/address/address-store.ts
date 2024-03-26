@@ -1,5 +1,5 @@
+import { Address } from "@/interfaces";
 import { create } from "zustand";
-import { Address } from "./interfaces/address.interface";
 import { persist } from "zustand/middleware";
 
 interface State {

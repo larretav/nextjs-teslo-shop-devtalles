@@ -1,10 +1,12 @@
 'use client';
 
-import { getCountries } from "@/actions";
-import { Country } from "@/interfaces";
+import { deleteUserAddress, getCountries, setUserAddress } from "@/actions";
+import { Address, Country } from "@/interfaces";
 import { useAddressStore } from "@/store/address/address-store";
 import clsx from "clsx";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
@@ -21,32 +23,48 @@ type FormInputs = {
 }
 
 type Props = {
-  countries: Country[]
+  countries: Country[],
+  userStoredAddress?: Partial<Address>
 }
 
-export const AddressForm = ({ countries }: Props) => {
+export const AddressForm = ({ countries, userStoredAddress = {} }: Props) => {
 
   const { handleSubmit, register, formState: { isValid }, reset } = useForm<FormInputs>({
-    // TODO: Leer de la base de datos
-    defaultValues: {}
+    defaultValues: {
+      ...(userStoredAddress as any),
+      rememberAddress: false
+    }
   })
+
+  const { data: session } = useSession({ required: true });
+  const router = useRouter();
 
   const setAddress = useAddressStore(state => state.setAddress);
   const address = useAddressStore(state => state.address);
 
-  const onSubmit = (data: FormInputs) => { 
+  const onSubmit = async (data: FormInputs) => {
     setAddress(data);
+
+    const { rememberAddress, ...restAddress } = data;
+
+    if (rememberAddress) {
+      await setUserAddress(restAddress, session!.user.id)
+    } else {
+      await deleteUserAddress(session!.user.id)
+    }
+
+    router.push('/checkout')
+
+
   }
 
   useEffect(() => {
     console.log(address)
-    if (address.firstName) {
-      console.log('loaded')
-      
+    if (address.firstName)
       reset(address)
-    }
-  }, [])
-  
+
+  }, [address])
+
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 gap-2 sm:gap-5 sm:grid-cols-2">
@@ -111,9 +129,9 @@ export const AddressForm = ({ countries }: Props) => {
           className="p-2 border rounded-md bg-gray-200"
           {...register('country', { required: true })}
         >
-          <option value="">[ Seleccione ]</option>
+          <option value="" >[ Seleccione ]</option>
           {
-            countries.map(({ id, name, key }) => <option key={id} value={key}>{name}</option>)
+            countries.map(({ id, name }) => <option key={id} value={id}>{name}</option>)
           }
 
         </select>
