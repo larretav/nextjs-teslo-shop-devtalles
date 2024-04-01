@@ -1,5 +1,7 @@
-import { QuantitySelector, Title } from "@/components";
+import { getOrderById } from "@/actions";
+import { PayPalButton, QuantitySelector, Title } from "@/components";
 import { initialData } from "@/seed/seed";
+import { currencyFormat } from "@/utils";
 import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,16 +13,19 @@ type Props = {
   }
 }
 
-const productsInCart = [
-  initialData.products[0],
-  initialData.products[1],
-  initialData.products[2]
-]
 
-export default function OrdersByIdPage({ params }: Props) {
+export default async function OrdersByIdPage({ params }: Props) {
 
   const { id } = params;
-  // TODO: Verificar auth
+
+  //! Llamar el server action
+  const { order } = await getOrderById(id);
+
+  if (!order) return <span className="text-2xl">La orden no existe</span>
+
+  const { OrderAddress: address, OrderItem: orderItem, user, ...restOrder } = order;
+
+  // TODO: Verificar auth 
   // redirect
 
   return (
@@ -32,38 +37,25 @@ export default function OrdersByIdPage({ params }: Props) {
 
           {/* Carrito */}
           <div className="flex flex-col mt-5 gap-5">
-            <div className={
-              clsx(
-                "flex items-center rounded-lg  py-2 px-3.5 text-xs font-bold text-white mb-5",
-                {
-                  'bg-red-500': false,
-                  'bg-green-600': true,
-                }
-              )
-            }>
-              <IoCardOutline size={25} />
-              {/* <span className="mx-2">Pendiente de pago</span> */}
-              <span className="mx-2 text-sm">Pagada</span>
-            </div>
-
+            <IsPaidAlert isPaid={restOrder.isPaid} />
 
             {/* Items */}
             {
-              productsInCart.map(product => (
-                <div key={product.slug} className="flex gap-2">
+              orderItem.map((item, idx) => (
+                <div key={idx + item.product.slug} className="flex gap-2">
                   <Image
-                    src={`/products/${product.images[0]}`}
+                    src={`/products/${item.product.ProductImage[0].url}`}
                     width={100}
                     height={100}
-                    alt={product.title}
+                    alt={item.product.title}
                     className="rounded-lg max-h-[100px]"
                   />
 
                   <div className="flex flex-col items-start gap-1">
-                    <p>{product.title}</p>
-                    <p>${product.price.toFixed(2)}</p>
-                    <p>${product.price.toFixed(2)} x 4</p>
-                    <p className="font-bold">Subtotal: $460.00</p>
+                    <p>({item.size}) - {item.product.title}</p>
+                    <p>${item.price.toFixed(2)}</p>
+                    <p>${item.price.toFixed(2)} x {item.quantity}</p>
+                    <p className="font-bold">Subtotal: {currencyFormat(item.price * item.quantity)}</p>
                   </div>
                 </div>
               ))
@@ -71,15 +63,15 @@ export default function OrdersByIdPage({ params }: Props) {
           </div>
 
           {/* Checkout - Resumen de orden */}
-          <div className="bg-white rounded-xl shadow-xl p-7 ">
+          <div className="bg-white rounded-xl shadow-xl p-7 h-fit">
 
-            <h2 className="text-2xl font-bold mb-2">Resumen de la orden</h2>
+            <h2 className="text-2xl font-semibold mb-2">Dirección de entrega</h2>
             <div className="mb-10">
-              <p className="text-xl">Alejandro Larreta Vzla</p>
-              <p>c. bosque de abetos 2063A</p>
-              <p>col. Jardines del Bosque</p>
-              <p>Los Mochis, Sin. 81200</p>
-              <p>6681342524</p>
+              <p className="text-xl">{user.name}</p>
+              <p>{address?.address}</p>
+              <p>{address?.address2}</p>
+              <p>{address?.city}, {address?.country.name} {address?.postalCode} </p>
+              <p>{address?.phone}</p>
             </div>
 
             {/* Divider */}
@@ -88,34 +80,21 @@ export default function OrdersByIdPage({ params }: Props) {
             <h2 className="text-2xl mb-2">Resumen de la orden</h2>
             <div className="grid grid-cols-2 gap-1">
               <span>No. Productos</span>
-              <span className="text-right">3 artículos</span>
+              <span className="text-right">{restOrder.itemsInOrder} artículos</span>
 
               <span>Subtotal</span>
-              <span className="text-right">$100.00</span>
+              <span className="text-right">{currencyFormat(restOrder.subTotal)}</span>
 
               <span>Impuestos (15%)</span>
-              <span className="text-right">$50.00</span>
+              <span className="text-right">{currencyFormat(restOrder.tax)}</span>
 
               <span className="mt-5 text-2xl">Total:</span>
-              <span className="mt-5 text-2xl text-right">$100.00</span>
+              <span className="mt-5 text-2xl text-right">{currencyFormat(restOrder.total)}</span>
             </div>
 
-            <div className="mt-5 w-full">
-              <div className={
-                clsx(
-                  "flex items-center rounded-lg  py-2 px-3.5 text-xs font-bold text-white mb-5",
-                  {
-                    'bg-red-500': false,
-                    'bg-green-600': true,
-                  }
-                )
-              }>
-                <IoCardOutline size={25} />
-                {/* <span className="mx-2">Pendiente de pago</span> */}
-                <span className="mx-2 text-sm">Pagada</span>
-              </div>
+            {/* <IsPaidAlert isPaid={restOrder.isPaid} /> */}
+            <PayPalButton orderId={order.id} amount={order.total} />
 
-            </div>
           </div>
 
         </div>
@@ -123,4 +102,23 @@ export default function OrdersByIdPage({ params }: Props) {
     </div>
 
   );
+}
+
+const IsPaidAlert = ({ isPaid }: { isPaid: boolean }) => {
+
+  return <div className="mt-5 w-full">
+    <div className={
+      clsx(
+        "flex items-center rounded-lg  py-2 px-3.5 text-xs font-bold text-white mb-5",
+        {
+          'bg-red-500': !isPaid,
+          'bg-green-600': isPaid,
+        }
+      )
+    }>
+      <IoCardOutline size={25} />
+      <span className="mx-2 text-sm">{isPaid ? 'Pagada' : 'Pendiente de pago'}</span>
+    </div>
+
+  </div>
 }

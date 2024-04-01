@@ -28,8 +28,8 @@ export const MiniCart = () => {
       )
     }>
       {
-        productsInCart.map(product => (
-          <div key={product.slug} className="flex mb-2">
+        productsInCart.map((product, idx) => (
+          <div key={idx + product.slug + product.quantity} className="flex mb-2">
             <Image
               src={`/products/${product.image}`}
               width={50}

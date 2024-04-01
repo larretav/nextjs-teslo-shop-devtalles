@@ -13,7 +13,8 @@ type Action = {
   updateProductQuantity: (product: CartProduct, quantity: number) => void,
   removeProduct: (product: CartProduct) => void,
   getTotalItems: () => number
-  getSummaryInformation: () => SummaryInformation
+  getSummaryInformation: () => SummaryInformation,
+  clearCart: () => void
 }
 
 export const useCartStore = create<State & Action>()(
@@ -83,6 +84,10 @@ export const useCartStore = create<State & Action>()(
 
         set({ cart: updatedCartProducts })
       },
+
+      clearCart: () => {
+        set({ cart: [] });
+      }
 
     })
     , {
