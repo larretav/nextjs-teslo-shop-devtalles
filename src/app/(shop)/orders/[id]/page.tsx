@@ -1,5 +1,5 @@
 import { getOrderById } from "@/actions";
-import { PayPalButton, QuantitySelector, Title } from "@/components";
+import { OrderStatus, PayPalButton, QuantitySelector, Title } from "@/components";
 import { initialData } from "@/seed/seed";
 import { currencyFormat } from "@/utils";
 import clsx from "clsx";
@@ -37,7 +37,7 @@ export default async function OrdersByIdPage({ params }: Props) {
 
           {/* Carrito */}
           <div className="flex flex-col mt-5 gap-5">
-            <IsPaidAlert isPaid={restOrder.isPaid} />
+            <OrderStatus isPaid={restOrder.isPaid} />
 
             {/* Items */}
             {
@@ -92,8 +92,11 @@ export default async function OrdersByIdPage({ params }: Props) {
               <span className="mt-5 text-2xl text-right">{currencyFormat(restOrder.total)}</span>
             </div>
 
-            {/* <IsPaidAlert isPaid={restOrder.isPaid} /> */}
-            <PayPalButton orderId={order.id} amount={order.total} />
+            {
+              restOrder.isPaid
+                ? <OrderStatus isPaid={restOrder.isPaid} />
+                : <PayPalButton orderId={order.id} amount={order.total} />
+            }
 
           </div>
 
@@ -102,23 +105,4 @@ export default async function OrdersByIdPage({ params }: Props) {
     </div>
 
   );
-}
-
-const IsPaidAlert = ({ isPaid }: { isPaid: boolean }) => {
-
-  return <div className="mt-5 w-full">
-    <div className={
-      clsx(
-        "flex items-center rounded-lg  py-2 px-3.5 text-xs font-bold text-white mb-5",
-        {
-          'bg-red-500': !isPaid,
-          'bg-green-600': isPaid,
-        }
-      )
-    }>
-      <IoCardOutline size={25} />
-      <span className="mx-2 text-sm">{isPaid ? 'Pagada' : 'Pendiente de pago'}</span>
-    </div>
-
-  </div>
 }

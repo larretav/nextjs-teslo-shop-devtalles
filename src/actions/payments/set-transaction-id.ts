@@ -4,17 +4,7 @@ import { auth } from '@/auth.config';
 import prisma from '@/lib/prisma'
 
 export const setTransactionId = async (orderId: string, transactionId: string) => {
-  console.log({orderId, transactionId})
-
-  // // Verificar sesión de usuario
-  // const session = await auth();
-  // const userId = session?.user.id
-
-  // if (!userId)
-  //   return {
-  //     ok: false,
-  //     message: 'No hay sesión de usuario'
-  //   }
+  // console.log({orderId, transactionId})
 
   try {
 
