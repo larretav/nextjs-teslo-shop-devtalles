@@ -14,17 +14,17 @@ export const authConfig: NextAuthConfig = {
 
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
-      if (isLoggedIn) return true;
+      const isUserAdmin = auth?.user.role === 'admin';
+      console.log(auth?.user)
 
-      return false;
-      // const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
-      // if (isOnDashboard) {
-      //   if (isLoggedIn) return true;
-      //   return false; // Redirect unauthenticated users to login page
-      // } else if (isLoggedIn) {
-      //   return Response.redirect(new URL('/', nextUrl));
-      // }
-      // return true;
+      const isOnAdmin = nextUrl.pathname.startsWith('/admin');
+
+      if (isLoggedIn) {
+        if (isOnAdmin && isUserAdmin) return true
+        return false
+      }
+
+      return Response.redirect(new URL('/', nextUrl));
     },
 
     jwt({ token, user }) {

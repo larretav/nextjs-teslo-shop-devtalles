@@ -1,6 +1,8 @@
 'use client';
 
+import { changeUserRole } from "@/actions";
 import { User } from "@/interfaces";
+import { ChangeEvent } from "react";
 
 type Props = {
   users: User[]
@@ -8,6 +10,10 @@ type Props = {
 
 
 const UsersTable = ({ users }: Props) => {
+
+  const handleChangeRole = (userId: string) => (e: ChangeEvent<HTMLSelectElement>) => {
+    changeUserRole(userId, e.target.value)
+  }
 
   return (
     <table className="min-w-full">
@@ -41,11 +47,10 @@ const UsersTable = ({ users }: Props) => {
                 <select
                   value={user.role}
                   className="w-full p-2 rounded-lg text-sm text-gray-900"
-                  onChange={(e) => console.log(e.target.value)}
+                  onChange={handleChangeRole(user.id)}
                 >
                   <option value="admin">Admin</option>
                   <option value="user">User</option>
-
                 </select>
               </td>
 
