@@ -1,10 +1,12 @@
 "use client";
 
-import { Category, Product } from "@/interfaces";
+import { Category, Product, ProductImage } from "@/interfaces";
+import clsx from "clsx";
+import Image from "next/image";
 import { useForm } from "react-hook-form";
 
 interface Props {
-  product: Product;
+  product: Product & { ProductImage?: ProductImage[] };
   categories: Category[]
 }
 
@@ -32,7 +34,10 @@ export const ProductForm = ({ product, categories }: Props) => {
   const {
     handleSubmit,
     register,
-    formState: { isValid }
+    formState: { isValid },
+    getValues,
+    setValue,
+    watch
   } = useForm<FormInputs>({
     defaultValues: {
       ...product,
@@ -43,8 +48,17 @@ export const ProductForm = ({ product, categories }: Props) => {
     }
   });
 
+  watch('sizes');
+
   const onSubmit = async (data: FormInputs) => {
     console.log(data)
+  }
+
+  const handleOnSizeChange = (size: string) => {
+    const sizes = new Set(getValues('sizes'));
+    sizes.has(size) ? sizes.delete(size) : sizes.add(size)
+
+    setValue('sizes', Array.from(sizes))
   }
 
   return (
@@ -117,7 +131,15 @@ export const ProductForm = ({ product, categories }: Props) => {
             {
               sizes.map(size => (
                 // bg-blue-500 text-white <--- si está seleccionado
-                <div key={size} className="flex  items-center justify-center w-10 h-10 mr-2 border rounded-md">
+                <div
+                  key={size}
+                  onClick={() => handleOnSizeChange(size)}
+                  className={clsx(
+                    "p-2 border rounded-md mr-2 mb-2 w-14 transition-all text-center cursor-pointer",
+                    {
+                      'bg-blue-500 text-white': getValues('sizes').includes(size)
+                    }
+                  )}>
                   <span>{size}</span>
                 </div>
               ))
@@ -135,6 +157,23 @@ export const ProductForm = ({ product, categories }: Props) => {
               className="p-2 border rounded-md bg-gray-200"
               accept="image/png, image/jpeg"
             />
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {
+                product.ProductImage.map(image => (
+                  <div key={image.id}>
+                    <Image
+                      src={`/products/${image.url}`}
+                      alt={product.title ?? ''}
+                      width={300}
+                      height={300}
+                      className="rounded-t-lg shadow-lg"
+                    />
+                    <button type="button" className="btn-danger rounded-b-2xl shadow-md w-full">Eliminar</button>
+                  </div>
+                ))
+              }
+            </div>
 
           </div>
 
