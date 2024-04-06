@@ -2,6 +2,7 @@
 
 import prisma from '@/lib/prisma';
 import { Gender, Product, Size } from '@prisma/client';
+import { revalidatePath } from 'next/cache';
 import { z } from 'zod'
 
 const productSchema = z.object({
@@ -21,13 +22,11 @@ const productSchema = z.object({
   tags: z.string(),
   categoryId: z.string().uuid(),
   gender: z.nativeEnum(Gender),
-})
+});
 
 export const createUpdateProduct = async (formData: FormData) => {
 
   try {
-
-
     const data = Object.fromEntries(formData)
     const productParsed = productSchema.safeParse(data)
 
@@ -42,11 +41,11 @@ export const createUpdateProduct = async (formData: FormData) => {
 
     const validatedProduct = productParsed.data;
     validatedProduct.slug = validatedProduct.slug.toLowerCase().replace(/ /g, '-').trim();
-    
+
     const { id, ...rest } = validatedProduct;
 
     const prismaTx = await prisma.$transaction(async (tx) => {
-      
+
       let product: Product;
 
       const tagsArray = rest.tags.split(',').map(tag => tag.trim().toLowerCase());
@@ -65,20 +64,39 @@ export const createUpdateProduct = async (formData: FormData) => {
         })
 
 
+      } else {
+        // Crear
+        product = await prisma.product.create({
+          data: {
+            ...rest,
+            sizes: {
+              set: rest.sizes as Size[]
+            },
+            tags: tagsArray
+          }
+        })
       }
+
+      return { product }
     })
 
+
     // TODO: revalidatePaths
+    revalidatePath('/admin/products')
+    revalidatePath(`/admin/product/${prismaTx.product.slug}`)
+    revalidatePath(`/products/${prismaTx.product.slug}`)
+    
+
+
     return {
       ok: true,
-      data: productParsed.data
+      product: prismaTx.product
     }
 
   } catch (error: any) {
-    console.log(error)
     return {
       ok: false,
-      message: error.message
+      message: 'No se pudo actualizar/crear el producto'
     }
   }
 }

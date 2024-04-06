@@ -10,13 +10,10 @@ export interface Product {
 	title: string;
 	// type: Type;
 	gender: Category
-
-	ProductImage: ProductImage[]
-	
 }
 
 export interface ProductImage {
-	id: string;
+	id: number;
 	url: string;
 	productId: string;
 }

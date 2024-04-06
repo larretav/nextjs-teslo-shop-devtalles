@@ -4,10 +4,12 @@ import { createUpdateProduct } from "@/actions";
 import { Category, Product, ProductImage } from "@/interfaces";
 import clsx from "clsx";
 import Image from "next/image";
+import { useRouter } from "next/router";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 interface Props {
-  product: Product & { ProductImage?: ProductImage[] };
+  product: Partial<Product> & { ProductImage?: ProductImage[] };
   categories: Category[]
 }
 
@@ -32,6 +34,10 @@ interface FormInputs {
 
 export const ProductForm = ({ product, categories }: Props) => {
 
+  const [errorMessage, setErrorMessage] = useState('')
+
+  const router = useRouter()
+
   const {
     handleSubmit,
     register,
@@ -42,7 +48,7 @@ export const ProductForm = ({ product, categories }: Props) => {
   } = useForm<FormInputs>({
     defaultValues: {
       ...product,
-      tags: product.tags.join(', '),
+      tags: product.tags?.join(', ') ?? '',
       sizes: product.sizes ?? []
 
       // TODO: Images
@@ -56,7 +62,10 @@ export const ProductForm = ({ product, categories }: Props) => {
     const formData = new FormData();
     const { ...productToSave } = data;
 
-    formData.append('id', product?.id ?? '');
+    if (product?.id) {
+      formData.append('id', product.id);
+    }
+
     formData.append('title', productToSave.title);
     formData.append('slug', productToSave.slug);
     formData.append('description', productToSave.description);
@@ -67,9 +76,13 @@ export const ProductForm = ({ product, categories }: Props) => {
     formData.append('categoryId', productToSave.categoryId);
     formData.append('gender', productToSave.gender);
 
-    const resp = await createUpdateProduct(formData)
+    const {ok, product: updatedProduct, ...resp} = await createUpdateProduct(formData);
 
-    console.log(resp)
+    if (!ok) return setErrorMessage(resp.message ?? '')
+
+
+    router.replace(`/admin/product/${updatedProduct?.slug}`)
+
 
 
   }
@@ -145,6 +158,11 @@ export const ProductForm = ({ product, categories }: Props) => {
         {/* As checkboxes */}
         <div className="flex flex-col">
 
+          <div className="flex flex-col mb-2">
+            <span>Inventario</span>
+            <input type="text" className="p-2 border rounded-md bg-gray-200" {...register('inStock', { required: true })} />
+          </div>
+
           <span>Tallas</span>
           <div className="flex flex-wrap">
 
@@ -180,7 +198,7 @@ export const ProductForm = ({ product, categories }: Props) => {
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {
-                product.ProductImage.map(image => (
+                product.ProductImage?.map(image => (
                   <div key={image.id}>
                     <Image
                       src={`/products/${image.url}`}
@@ -196,6 +214,10 @@ export const ProductForm = ({ product, categories }: Props) => {
             </div>
 
           </div>
+
+          {
+            errorMessage && <span className="px-5 py-2 bg-red-300 border-l-4 border-red-500 rounded-lg">{errorMessage}</span>
+          }
 
         </div>
       </div>

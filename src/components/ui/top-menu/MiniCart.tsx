@@ -5,6 +5,7 @@ import { initialData } from '@/seed/seed';
 import Link from 'next/link';
 import { useCartStore, useUIStore } from '@/store';
 import clsx from 'clsx';
+import { ProductImage } from '@/components';
 
 // const productsInCart = [
 //   initialData.products[0],
@@ -30,8 +31,8 @@ export const MiniCart = () => {
       {
         productsInCart.map((product, idx) => (
           <div key={idx + product.slug + product.quantity} className="flex mb-2">
-            <Image
-              src={`/products/${product.image}`}
+            <ProductImage
+              src={product.image}
               width={50}
               height={50}
               alt={product.title}
