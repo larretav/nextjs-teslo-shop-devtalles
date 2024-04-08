@@ -2,7 +2,7 @@
 import { getStockBySlug } from '@/actions';
 import { titleFont } from '@/config/fonts'
 import { Product } from '@prisma/client';
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 type Props = {
   slug: string
@@ -13,7 +13,7 @@ export const StockLabel = ({ slug }: Props) => {
   const [inStock, setInStock] = useState<number>();
   const [isLoading, setIsLoading] = useState(true)
 
-  const getStock = async () => {
+  const getStock = useCallback(async () => {
     try {
       const inStockDb = await getStockBySlug(slug);
 
@@ -22,12 +22,11 @@ export const StockLabel = ({ slug }: Props) => {
       console.log(error)
     }
     setIsLoading(false);
-
-  }
+  },[slug])
 
   useEffect(() => {
     getStock()
-  }, [])
+  }, [getStock, slug])
 
 
   return (
