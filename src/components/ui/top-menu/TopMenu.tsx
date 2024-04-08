@@ -57,14 +57,16 @@ export const TopMenu = (props: Props) => {
           <IoSearchOutline className="w-5 h-5" />
         </Link>
 
-        <div onClick={handleClickCart} className="relative cursor-pointer">
-          {
-            (isLoaded && totalItemsInCart > 0) && <span className="px-1 absolute text-xs rounded-full font-bold -top-2 -right-2 bg-blue-500 text-white">
-              {totalItemsInCart}
-            </span>
-          }
+        <div onClick={handleClickCart} className="relative">
+          <div className="cursor-pointer">
+            {
+              (isLoaded && totalItemsInCart > 0) && <span className="px-1 absolute text-xs rounded-full font-bold -top-2 -right-2 bg-blue-500 text-white">
+                {totalItemsInCart}
+              </span>
+            }
+            <IoCartOutline className="w-5 h-5 " />
+          </div>
 
-          <IoCartOutline className="w-5 h-5" />
           <MiniCart />
         </div>
 

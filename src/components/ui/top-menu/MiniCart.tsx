@@ -20,7 +20,8 @@ export const MiniCart = () => {
   const subTotal = productsInCart.reduce((prev, curr) => prev + (curr.price * curr.quantity), 0);
 
   return (
-    <div className={
+    <div
+      className={
       clsx(
         "absolute w-[300px] right-0 z-20 bg-white rounded-xl shadow-xl p-5 text-xs transition-all fade-in",
         {
